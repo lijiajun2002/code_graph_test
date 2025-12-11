@@ -7,8 +7,8 @@ def validate_number(value):
     return isinstance(value, (int, float))
 
 def format_result(result):
-    """Format calculation result with prefix."""
-    return f"Calculation Result: {result:.2f}"
+    """Format calculation result."""
+    return f"Result: {result}"
 
 def round_result(result, decimals=2):
     """Round result to specified decimal places."""
