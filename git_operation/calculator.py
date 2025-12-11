@@ -1,9 +1,10 @@
 """
-Calculator module with basic operations.
+Calculator module with basic arithmetic operations.
+Version: 1.0
 """
 
 def add(a, b):
-    """Add two numbers."""
+    """Add two numbers together."""
     return a + b
 
 def subtract(a, b):
