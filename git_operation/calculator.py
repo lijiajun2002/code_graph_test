@@ -27,5 +27,5 @@ def divide(a, b):
     if not validate_number(a) or not validate_number(b):
         raise TypeError("Both arguments must be numbers")
     if b == 0:
-        raise ValueError("Cannot divide by zero")
+        raise ZeroDivisionError(f"Cannot divide {a} by zero")
     return a / b
