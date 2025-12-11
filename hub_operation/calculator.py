@@ -6,12 +6,43 @@ This module is part of the code_graph_test project for testing GitHub collaborat
 """
 
 
+class CalculatorError(Exception):
+    """Base exception for calculator errors"""
+    pass
+
+
+class InvalidInputError(CalculatorError):
+    """Raised when input is not a valid number"""
+    pass
+
+
+class DivisionByZeroError(CalculatorError):
+    """Raised when attempting to divide by zero"""
+    pass
+
+
 class Calculator:
     """A simple calculator class with basic arithmetic operations."""
     
     def __init__(self):
         """Initialize the calculator."""
         self.history = []
+    
+    def _validate_input(self, *args):
+        """
+        Validate that all inputs are numeric.
+        
+        Args:
+            *args: Values to validate
+            
+        Raises:
+            InvalidInputError: If any input is not numeric
+        """
+        for arg in args:
+            if not isinstance(arg, (int, float)):
+                raise InvalidInputError(
+                    f"Invalid input: {arg}. Please provide numeric values only."
+                )
     
     def add(self, a: float, b: float) -> float:
         """
@@ -23,7 +54,11 @@ class Calculator:
             
         Returns:
             Sum of a and b
+            
+        Raises:
+            InvalidInputError: If inputs are not numeric
         """
+        self._validate_input(a, b)
         result = a + b
         self.history.append(f"{a} + {b} = {result}")
         return result
@@ -38,7 +73,11 @@ class Calculator:
             
         Returns:
             Difference of a and b
+            
+        Raises:
+            InvalidInputError: If inputs are not numeric
         """
+        self._validate_input(a, b)
         result = a - b
         self.history.append(f"{a} - {b} = {result}")
         return result
@@ -53,7 +92,11 @@ class Calculator:
             
         Returns:
             Product of a and b
+            
+        Raises:
+            InvalidInputError: If inputs are not numeric
         """
+        self._validate_input(a, b)
         result = a * b
         self.history.append(f"{a} * {b} = {result}")
         return result
@@ -70,10 +113,15 @@ class Calculator:
             Quotient of a and b
             
         Raises:
-            ValueError: If denominator is zero
+            InvalidInputError: If inputs are not numeric
+            DivisionByZeroError: If denominator is zero
         """
+        self._validate_input(a, b)
+        
         if b == 0:
-            raise ValueError("Cannot divide by zero")
+            raise DivisionByZeroError(
+                "Cannot divide by zero. Please provide a non-zero denominator."
+            )
         
         result = a / b
         self.history.append(f"{a} / {b} = {result}")
@@ -100,11 +148,28 @@ if __name__ == "__main__":
     print("Calculator Demo")
     print("-" * 40)
     
-    print(f"10 + 5 = {calc.add(10, 5)}")
-    print(f"10 - 5 = {calc.subtract(10, 5)}")
-    print(f"10 * 5 = {calc.multiply(10, 5)}")
-    print(f"10 / 5 = {calc.divide(10, 5)}")
+    try:
+        print(f"10 + 5 = {calc.add(10, 5)}")
+        print(f"10 - 5 = {calc.subtract(10, 5)}")
+        print(f"10 * 5 = {calc.multiply(10, 5)}")
+        print(f"10 / 5 = {calc.divide(10, 5)}")
+    except CalculatorError as e:
+        print(f"Error: {e}")
     
     print("\nCalculation History:")
     for item in calc.get_history():
         print(f"  {item}")
+    
+    # Test error handling
+    print("\n" + "-" * 40)
+    print("Testing Error Handling:")
+    
+    try:
+        calc.add("10", 5)
+    except InvalidInputError as e:
+        print(f"✓ Input validation works: {e}")
+    
+    try:
+        calc.divide(10, 0)
+    except DivisionByZeroError as e:
+        print(f"✓ Division by zero handled: {e}")
